@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import type { Task } from "../types/todos.types";
 import { useUser } from "../contexts/todos/useUser";
-import { BeatLoader, ClipLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
+import autoAnimate from "@formkit/auto-animate";
 
 function Todos() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<string>("");
   const { user, setUser } = useUser();
+  const parent = useRef<HTMLUListElement>(null);
   let navigate = useNavigate();
+  useEffect(() => {
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +60,7 @@ function Todos() {
             </button>
           </div>
           <p>Have a great and productive day!</p>
-          <ul>
+          <ul ref={parent}>
             {tasks.map((task) => (
               <li
                 key={task.id}
